@@ -1,0 +1,8 @@
+export const headerData = [
+    {title: 'Home', href: '/'},
+    {title: 'Shop', href: '/shop'},
+    {title: 'Blog', href: '/blog'},
+    {title: 'Hot deal', href: '/deal'},
+    {title:'Admin studio', href:'/studio/structure'},
+    //{title: 'Contact', href: '/contact'},
+]
