@@ -19,7 +19,7 @@ export const Logo = ({
             className
           )}
         >
-          Shopcar
+          Echocar
           <span className={cn("text-shop_light_green", spanDesign)}>t</span>
         </h2>
       </Link>
