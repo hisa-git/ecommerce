@@ -83,3 +83,17 @@ export async function getProductBySlug(slug: string) {
     { slug }
   );
 }
+export async function getProductsByCategory(categorySlug: string) {
+  return client.fetch(
+    `*[_type == "product" && defined(categories[]->slug.current) && $categorySlug in categories[]->slug.current]{
+      _id,
+      name,
+      description,
+      status,
+      discount,
+      price,
+      "image": images[0].asset->url
+    }`,
+    { categorySlug }
+  );
+}
