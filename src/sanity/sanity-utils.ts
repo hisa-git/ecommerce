@@ -75,14 +75,15 @@ export async function getProductBySlug(slug: string) {
       name,
       description,
       status,
-      description,
       discount,
       price,
-      "image": images[0].asset->url
+      "image": images[0].asset->url,
+      slug
     }`,
     { slug }
   );
 }
+
 export async function getProductsByCategory(categorySlug: string) {
   return client.fetch(
     `*[_type == "product" && defined(categories[]->slug.current) && $categorySlug in categories[]->slug.current]{

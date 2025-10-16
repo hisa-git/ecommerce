@@ -7,7 +7,7 @@ import capitalize from "../../utils/capitalize";
 interface ProductItemProps {
   product: {
     _id: string;
-    slug: { current: string };
+    slug: { current: string } | string;
     image: string;
     name: string;
     description: string;
@@ -15,16 +15,32 @@ interface ProductItemProps {
     discount?: number;
     status?: string;
   };
+  type?: "view" | "cart";
 }
 
-export default function ProductItemCard({ product }: ProductItemProps) {
+export default function ProductItemCard({ product, type }: ProductItemProps) {
+  const slug =
+    typeof product.slug === "object" && product.slug?.current
+      ? product.slug.current
+      : product.slug;
+
+  if (!slug) return null;
+
   const hasDiscount = Number(product.discount) > 0;
   const finalPrice = hasDiscount
     ? (product.price * (1 - product.discount / 100)).toFixed(2)
-    : product.price;
+    : product.price.toFixed(2);
+
   return (
-    <Link href={`/products/${product.slug.current}`} key={product._id}>
-      <div className="flex flex-col overflow-hidden rounded-lg border border-black1/2 bg-white w-full">
+    <Link
+      href={`/products/${
+        typeof product.slug === "object" && product.slug?.current
+          ? product.slug.current
+          : product.slug
+      }`}
+      key={product._id}
+    >
+      <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-white w-full">
         <div className="relative w-full aspect-square bg-white flex items-center justify-center">
           <Image
             src={product.image}
@@ -73,12 +89,14 @@ export default function ProductItemCard({ product }: ProductItemProps) {
               </span>
             </div>
 
-            <Button
-              variant="default"
-              className="border-shop_dark_green bg-shop_dark_green hover:text-black hover:bg-white hover:border"
-            >
-              Add to cart
-            </Button>
+            {type !== "view" && (
+              <Button
+                variant="default"
+                className="border-shop_dark_green bg-shop_dark_green hover:text-black hover:bg-white hover:border"
+              >
+                Add to cart
+              </Button>
+            )}
           </div>
         </div>
       </div>
