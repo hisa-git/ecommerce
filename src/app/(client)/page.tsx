@@ -1,18 +1,24 @@
 import { Container } from "@/components/Container";
 import Banner from "@/components/Banner";
 import ProductCard from "@/components/products/ProductCard/ProductCard";
-import CategoriesEnvelope from "@/components/products/Filter/CategoriesEnvelope";
+import CategoriesEnvelopeClient from "@/components/products/Filter/CategoriesEnvelopeClient";
 import RecentlyViewed from "@/components/products/RecentlyViewed";
+import { getProducts, getCategories } from "@/sanity/sanity-utils";
 
-export default function Home() {
+export default async function Home() {
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
+
   return (
-    <>
-      <Container className="p-10 px-4">
-        <Banner></Banner>
-        <CategoriesEnvelope />
-        <ProductCard amount={5} />
-        <RecentlyViewed />
-      </Container>
-    </>
+    <Container className="p-10 px-4">
+      <Banner />
+      <CategoriesEnvelopeClient
+        categories={categories}
+        initialProducts={products}
+      />
+      <RecentlyViewed />
+    </Container>
   );
 }

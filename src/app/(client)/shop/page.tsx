@@ -1,22 +1,20 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import {Container} from "@/components/Container";
+import { Container } from "@/components/Container";
 import ProductCard from "@/components/products/ProductCard/ProductCard";
-
-export default function Shop() {
+import ProductItemCard from "@/components/products/ProductItemCard";
+import ShopFiltration from "@/components/products/Filter/ShopFiltration";
+import { getProducts } from "@/sanity/sanity-utils";
+export default async function Shop() {
+  const products = await getProducts();
   return (
     <>
-      <Container className="p-10 bg-shop-light-pink">
-        <h2 className="text-xl font-semibold">Shop</h2>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
-          dolorem, magnam reprehenderit delectus quod nihil aliquid sit suscipit
-          hic consectetur officia nobis modi optio doloribus ratione dolores!
-          Modi omnis et tempore dolorum alias placeat quos, quaerat repudiandae
-          autem, minus labore pariatur saepe, deleniti repellendus molestiae
-          assumenda. Atque accusantium assumenda nisi?
-        </p>
-        <ProductCard amount={5} />
+      <Container className="p-10 bg-shop-light-pink flex flex-col lg:flex-row gap-6">
+        <div>
+          <ShopFiltration />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">Shop</h2>
+          <ProductCard grid={4} />
+        </div>
       </Container>
     </>
   );

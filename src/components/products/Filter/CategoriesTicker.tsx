@@ -7,12 +7,14 @@ type Props = {
   categories: CategoryType[];
   speed?: number;
   gap?: number;
+  onCategorySelect?: (id: string | null) => void;
 };
 
 export default function CategoriesTicker({
   categories,
   speed = 25,
   gap = 8,
+  onCategorySelect,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
@@ -23,8 +25,8 @@ export default function CategoriesTicker({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [contentWidth, setContentWidth] = useState(0);
 
-  //const items = [{ _id: "all", title: "All" }, ...categories];
   const items = [...categories];
+
   const measure = useCallback(() => {
     if (!scrollerRef.current) return;
     const firstPart = scrollerRef.current.querySelector(
@@ -34,6 +36,9 @@ export default function CategoriesTicker({
     const w = firstPart.getBoundingClientRect().width;
     setContentWidth(w);
   }, []);
+  useEffect(() => {
+    console.log("Categories in ticker:", categories);
+  }, [categories]);
 
   useEffect(() => {
     measure();
@@ -74,10 +79,11 @@ export default function CategoriesTicker({
     };
   }, [isPaused, contentWidth, speed]);
 
-  const handleMouseEnter = () => setIsPaused(true);
-  const handleMouseLeave = () => setIsPaused(false);
-  const handleBadgeEnter = () => setIsPaused(true);
-  const handleBadgeLeave = () => setIsPaused(false);
+  const handleSelect = (slug: string) => {
+    const newId = selectedId === slug ? null : slug;
+    setSelectedId(newId);
+    onCategorySelect?.(newId);
+  };
 
   const renderBadges = (prefix: string) =>
     items.map((category) => (
@@ -89,21 +95,11 @@ export default function CategoriesTicker({
         <Badge
           className={
             "inline-flex items-center cursor-pointer transition-all border " +
-            (selectedId === category._id
-              ? "bg-black/90 border-black1/90 text-white"
+            (selectedId === category.slug.current
+              ? "bg-black/90 border-black/90 text-white"
               : "bg-white border-black/10 text-black hover:bg-black/80 hover:text-white")
           }
-          onMouseEnter={handleBadgeEnter}
-          onMouseLeave={handleBadgeLeave}
-          onClick={() => setSelectedId(category._id)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setSelectedId(category._id);
-            }
-          }}
+          onClick={() => handleSelect(category.slug.current)}
         >
           <span className="px-3 py-1 text-sm">{category.title}</span>
         </Badge>
@@ -113,28 +109,19 @@ export default function CategoriesTicker({
   return (
     <div
       className="w-full overflow-hidden select-none mt-10 mb-5"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
       ref={containerRef}
-      aria-label="Categories ticker"
     >
       <div
         ref={scrollerRef}
         className="flex whitespace-nowrap will-change-transform"
-        style={{ transform: "translateX(0px)" }}
       >
         <div className="flex ticker-first">{renderBadges("first")}</div>
         <div className="flex" aria-hidden="true">
           {renderBadges("second")}
         </div>
       </div>
-      <style jsx>{`
-        .ticker-first,
-        .ticker-first > div,
-        .flex > div {
-          display: inline-flex;
-        }
-      `}</style>
     </div>
   );
 }

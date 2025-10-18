@@ -27,7 +27,7 @@ export const client = createClient({
 
 export async function getProducts() {
   return await client.fetch(`
-    [_type == "product"]{
+    *[_type == "product"]{
       _id,
       slug,
       name,
@@ -39,6 +39,7 @@ export async function getProducts() {
     }
   `);
 }
+
 export async function getAmountOfProducts(amount: number) {
   return await client.fetch(
     `*[_type == "product"][0...$amount]{
@@ -84,17 +85,19 @@ export async function getProductBySlug(slug: string) {
   );
 }
 
-export async function getProductsByCategory(categorySlug: string) {
+export async function getProductsByCategory(categorySlug: string, limit = 5) {
   return client.fetch(
-    `*[_type == "product" && defined(categories[]->slug.current) && $categorySlug in categories[]->slug.current]{
+    `*[_type == "product" && defined(categories[]->slug.current) && $categorySlug in categories[]->slug.current][0...$limit]{
       _id,
       name,
       description,
       status,
       discount,
       price,
-      "image": images[0].asset->url
+      "image": images[0].asset->url,
+      "categories": categories[]->{_id, title, slug},
+      slug
     }`,
-    { categorySlug }
+    { categorySlug, limit }
   );
 }

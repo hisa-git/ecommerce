@@ -2,7 +2,9 @@ export default interface CategoryType {
   _id: string;
   title: string;
   description: string;
-  slug: string;
+  slug: {
+    current: string;
+  };
   featured: boolean;
   image: {
     asset: {
