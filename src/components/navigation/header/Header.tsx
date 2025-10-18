@@ -1,9 +1,9 @@
 import React from "react";
 import { Container } from "../../Container";
-import { Logo } from "../../Logo";
+import { Logo } from "../../media/Logo";
 import { HeaderMenu } from "./HeaderMenu";
 import { SearchBar } from "../../SearchBar";
-import { CartIcon } from "../../CartIcon";
+import Cart from "./CartIcon";
 import { FavoriteButton } from "./FavoriteButton";
 import { SignIn } from "../../SignIn";
 import { MobileMenu } from "./MobileMenu";
@@ -23,7 +23,7 @@ export const Header = () => {
         </div>
         <div className="flex-1 flex justify-end gap-5">
           <SearchBar />
-          <CartIcon />
+          <Cart />
           <FavoriteButton />
           <SignIn />
         </div>

@@ -12,26 +12,26 @@ interface FilterAsideProps {
 export default function FilterAside({ onFilterChange }: FilterAsideProps) {
   const [filters, setFilters] = useState({
     category: [] as string[],
-    priceRange: "",
+    priceRange: [0, 5000] as [number, number],
     status: [] as string[],
   });
 
-  const [categories, setCategories] = useState<string[]>([]);
-  const [statuses, setStatuses] = useState<string[]>([
-    "New",
-    "Sale",
-    "Out of stock",
-  ]);
-
+  const [categories, setCategories] = useState<
+    { slug: string; title: string }[]
+  >([]);
+  const [statuses] = useState<string[]>(["New", "Hot", "Sale"]);
   const [minLimit, setMinLimit] = useState(0);
   const [maxLimit, setMaxLimit] = useState(10000);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
 
   useEffect(() => {
     getCategories().then((cats) => {
-      // достаём только названия
-      const catTitles = cats.map((c: any) => c.title).filter(Boolean);
-      setCategories(catTitles);
+      const validCats = cats
+        .filter((c: any) => c.slug?.current && c.title)
+        .map((c: any) => ({
+          slug: c.slug.current,
+          title: c.title,
+        }));
+      setCategories(validCats);
     });
   }, []);
 
@@ -41,96 +41,71 @@ export default function FilterAside({ onFilterChange }: FilterAsideProps) {
         ? prev[type].filter((v) => v !== value)
         : [...prev[type], value];
       const updated = { ...prev, [type]: newValues };
+      console.log(`[FilterAside] ${type} changed:`, value);
+      console.log(`[FilterAside] Updated filters:`, updated);
       onFilterChange?.(updated);
       return updated;
     });
   };
 
   const handlePriceChange = (range: [number, number]) => {
-    setPriceRange(range);
     setFilters((prev) => {
       const updated = { ...prev, priceRange: range };
+      console.log(`[FilterAside] Price range changed:`, range);
+      console.log(`[FilterAside] Updated filters:`, updated);
       onFilterChange?.(updated);
       return updated;
     });
   };
 
   const resetFilters = () => {
-    const cleared = { category: [], priceRange: "", status: [] };
+    const cleared = {
+      category: [],
+      priceRange: [minLimit, maxLimit] as [number, number],
+      status: [],
+    };
+    console.log(`[FilterAside] Filters reset to:`, cleared);
     setFilters(cleared);
-    setPriceRange([minLimit, maxLimit]);
     onFilterChange?.(cleared);
   };
 
   return (
     <aside className="lg:w-64 bg-white border rounded-lg p-5 flex flex-col gap-6 md:w-full sticky top-20">
       <h3 className="text-lg font-semibold text-slate-900">Filters</h3>
-
-      {/* CATEGORY */}
       <div>
         <h4 className="text-sm font-medium text-slate-700 mb-2 uppercase">
           Category
         </h4>
         <div className="flex flex-col gap-1 text-slate-600">
           {categories.map((cat) => (
-            <label key={cat} className="flex items-center gap-2 cursor-pointer">
+            <label
+              key={cat.slug}
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <input
                 type="checkbox"
-                checked={filters.category.includes(cat)}
-                onChange={() => handleCheckbox("category", cat)}
+                checked={filters.category.includes(cat.slug)}
+                onChange={() => handleCheckbox("category", cat.slug)}
                 className="accent-shop_dark_green"
               />
-              {cat}
+              {cat.title}
             </label>
           ))}
         </div>
       </div>
 
-      {/* PRICE */}
       <div>
         <h4 className="text-sm font-medium text-slate-700 mb-2 uppercase">
           Price
         </h4>
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex flex-col w-1/2">
-            <label className="text-xs text-slate-500">Min</label>
-            <input
-              type="number"
-              value={minLimit}
-              onChange={(e) => {
-                const val = Math.max(0, Number(e.target.value));
-                setMinLimit(val);
-                if (priceRange[0] < val)
-                  setPriceRange([val, Math.max(val, priceRange[1])]);
-              }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-sm"
-            />
-          </div>
-          <div className="flex flex-col w-1/2">
-            <label className="text-xs text-slate-500">Max</label>
-            <input
-              type="number"
-              value={maxLimit}
-              onChange={(e) => {
-                const val = Math.max(minLimit + 1, Number(e.target.value));
-                setMaxLimit(val);
-                if (priceRange[1] > val)
-                  setPriceRange([Math.min(priceRange[0], val - 1), val]);
-              }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-sm"
-            />
-          </div>
-        </div>
-
         <PriceRange
           min={minLimit}
           max={maxLimit}
-          value={priceRange}
+          value={filters.priceRange}
           onChange={handlePriceChange}
         />
       </div>
 
-      {/* STATUS */}
       <div>
         <h4 className="text-sm font-medium text-slate-700 mb-2 uppercase">
           Status
@@ -156,7 +131,7 @@ export default function FilterAside({ onFilterChange }: FilterAsideProps) {
       <Button
         variant="outline"
         onClick={resetFilters}
-        className="mt-auto border-shop_dark_green text-shop_dark_green hover:bg-shop_light_green hover:text-white"
+        className="mt-auto border-shop_dark_green text-shop_dark_green"
       >
         Reset filters
       </Button>

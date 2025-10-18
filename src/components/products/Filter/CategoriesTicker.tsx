@@ -36,9 +36,9 @@ export default function CategoriesTicker({
     const w = firstPart.getBoundingClientRect().width;
     setContentWidth(w);
   }, []);
-  useEffect(() => {
-    console.log("Categories in ticker:", categories);
-  }, [categories]);
+  //useEffect(() => {
+    //console.log("Categories in ticker:", categories);
+  //}, [categories]);
 
   useEffect(() => {
     measure();

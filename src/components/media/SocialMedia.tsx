@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
   Tooltip,
   TooltipContent,
-} from "./ui/tooltip";
+} from "../ui/tooltip";
 import Link from "next/link";
 
 export const SocialMedia = () => {

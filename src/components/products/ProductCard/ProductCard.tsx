@@ -19,7 +19,7 @@ export default async function ProductCard(props: ProductCardProps) {
 
   return (
     <div
-      className={`grid xs:grid-cols-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-${gridCols} gap-6`}
+    className={`grid xs:grid-cols-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-${gridCols} gap-6`}
     >
       {products.map((product: any) => (
         <ProductItemCard product={product} key={product.slug} />

@@ -35,7 +35,8 @@ export async function getProducts() {
       status,
       description,
       discount,
-      "image": images[0].asset->url
+      "image": images[0].asset->url,
+      "categories": categories[]->{slug}
     }
   `);
 }
@@ -87,7 +88,7 @@ export async function getProductBySlug(slug: string) {
 
 export async function getProductsByCategory(categorySlug: string, limit = 5) {
   return client.fetch(
-    `*[_type == "product" && defined(categories[]->slug.current) && $categorySlug in categories[]->slug.current][0...$limit]{
+    `*[_type == "product" && $categorySlug in categories[]->slug.current][0...$limit]{
       _id,
       name,
       description,
@@ -95,8 +96,7 @@ export async function getProductsByCategory(categorySlug: string, limit = 5) {
       discount,
       price,
       "image": images[0].asset->url,
-      "categories": categories[]->{_id, title, slug},
-      slug
+      "categories": categories[]->{slug}
     }`,
     { categorySlug, limit }
   );

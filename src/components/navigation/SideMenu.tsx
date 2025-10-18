@@ -1,12 +1,11 @@
 "use client";
 import React, { FC } from "react";
-import { Logo } from "../Logo";
+import { Logo } from "../media/Logo";
 import { X } from "lucide-react";
 import { headerData } from "@/constants/headerdata";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SocialMedia } from "../SocialMedia";
-import { on } from "events";
+import { SocialMedia } from "../media/SocialMedia";
 import { useOutsideClick } from "@/hooks";
 
 interface SideMenuProps {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "../Container";
-import { Logo } from "../Logo";
-import { SocialMedia } from "../SocialMedia";
+import { Logo } from "../media/Logo";
+import { SocialMedia } from "../media/SocialMedia";
 import { SubText, SubTitle } from "../ui/title";
 import { quickLinksdata } from "@/constants/quickLinksdata";
 import Link from "next/link";

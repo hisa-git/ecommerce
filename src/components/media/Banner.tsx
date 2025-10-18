@@ -1,8 +1,8 @@
 import React from "react";
-import { Title } from "./ui/title";
+import { Title } from "../ui/title";
 import Link from "next/link";
 import Image from "next/image";
-import banner_1 from "../images/banner.png";
+import banner_1 from "../../images/banner.png";
 
 const Banner = () => {
   return (

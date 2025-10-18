@@ -1,5 +1,5 @@
 import { Container } from "@/components/Container";
-import Banner from "@/components/Banner";
+import Banner from "@/components/media/Banner";
 import ProductCard from "@/components/products/ProductCard/ProductCard";
 import CategoriesEnvelopeClient from "@/components/products/Filter/CategoriesEnvelopeClient";
 import RecentlyViewed from "@/components/products/RecentlyViewed";
